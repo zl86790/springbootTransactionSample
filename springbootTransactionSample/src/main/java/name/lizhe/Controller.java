@@ -1,6 +1,5 @@
 package name.lizhe;
 
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @EnableTransactionManagement
-@Transactional
-public class Controller {
-	
+//@Transactional
+public class Controller implements Myinterface{
+
 	@Autowired
-    @Qualifier("template")
-    JdbcTemplate jdbcTemplate1;
+	@Qualifier("template")
+	JdbcTemplate jdbcTemplate1;
 
 	@RequestMapping(value = "/hello", method = RequestMethod.GET)
 	public String hello(HttpServletRequest req) {
@@ -28,15 +27,17 @@ public class Controller {
 		return "helloworld";
 	}
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional(rollbackFor={Exception.class, RuntimeException.class},propagation = Propagation.REQUIRES_NEW)
 	public void doLogic() {
-		try{
-			jdbcTemplate1.update("insert into table1 (id) value (1)");
-			jdbcTemplate1.update("insert into table1 (id) value (1)");
-		}catch(Exception e){
-			e.printStackTrace();
-			throw new RuntimeException("RunTimeException RunTimeException RunTimeException");
-		}
-		
+		update1();
+		update2();
+	}
+	
+	public void update1(){
+		jdbcTemplate1.update("insert into table1 (id) value (1)");
+	}
+	
+	public void update2(){
+		jdbcTemplate1.update("insert into table1 (id) value (1)");
 	}
 }
