@@ -15,29 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @EnableTransactionManagement
 //@Transactional
-public class Controller implements Myinterface{
-
+public class Controller{
+	
 	@Autowired
-	@Qualifier("template")
-	JdbcTemplate jdbcTemplate1;
+	Myinterface myinterface;
 
 	@RequestMapping(value = "/hello", method = RequestMethod.GET)
 	public String hello(HttpServletRequest req) {
-		doLogic();
+		myinterface.doLogic();
 		return "helloworld";
 	}
-
-	@Transactional(rollbackFor={Exception.class, RuntimeException.class},propagation = Propagation.REQUIRES_NEW)
-	public void doLogic() {
-		update1();
-		update2();
-	}
 	
-	public void update1(){
-		jdbcTemplate1.update("insert into table1 (id) value (1)");
-	}
-	
-	public void update2(){
-		jdbcTemplate1.update("insert into table1 (id) value (1)");
-	}
 }
